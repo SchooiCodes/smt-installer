@@ -49,8 +49,9 @@ REM if /i %CAP%==Y if /i %upd%==y echo https://github.com/SchooiCodes/smt>>"%USE
 REM if /i %CAP%==Y if /i %upd%==y echo https://youtube.com/@SchooiYT>>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
 REM if /i %CAP%==Y if /i %upd%==y echo https://discord.com/users/749226175687295028>>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
 REM if /i %CAP%==Y if /i %upd%==y echo https://discord.gg/REj54yP7Qa>>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
-call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s Telemetry /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
-call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s AddedToPath /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s System /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s System /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i disclaimers /s Visuals /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 rd /s /q %USERPROFILE%\Documents\smt\app >nul
 md %USERPROFILE%\Documents\smt\app >nul
 xcopy %USERPROFILE%\Documents\Github\smt\* %USERPROFILE%\Documents\SMT\app\ >nul
@@ -84,5 +85,6 @@ if /i %push%==Y git push
 xcopy /Y %~f0 %USERPROFILE%\Documents\smt\ >nul
 7z x "%USERPROFILE%\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup.exe" -o"%USERPROFILE%\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup" -aoa >nul
 explorer "%USERPROFILE%\Desktop\LatestSMTxNSISRelease\"
-call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s Telemetry /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
-call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s AddedToPath /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s System /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s System /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i disclaimers /s Visuals /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
