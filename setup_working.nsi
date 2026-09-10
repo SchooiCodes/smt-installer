@@ -4,12 +4,6 @@
 !include "MUI2.nsh"
 !include "logiclib.nsh"
 !include "UninstallLog.nsh"
-!include "StrFunc.nsh"
-!include "Sections.nsh"
-!include "FileFunc.nsh"
-
-${StrStr}
-!insertmacro GetSize
 
 ;--------------------------------
 ; Configure UnInstall log to only remove what is installed
@@ -81,15 +75,12 @@ ${StrStr}
 ; Custom defines
 
 !define NAME "Schooi's Multitool"
-!define APPFILE "SchooiMultitool.bat"
+!define APPFile "SchooiMultitool.bat"
 !define VERSION "2.3"
 !define SLUG "${NAME} v${VERSION}"
-!define UNINSTALL_PATH "Software\Microsoft\Windows\CurrentVersion\Uninstall\SMT"
 
 ;--------------------------------
 ; General
-
-SetCompressor /SOLID lzma
 
 Name "${NAME}"
 OutFile "${NAME} Setup.exe"
@@ -106,8 +97,8 @@ RequestExecutionLevel admin
 !define MUI_HEADERIMAGE_BITMAP "assets\head.bmp"
 !define MUI_ABORTWARNING
 !define MUI_WELCOMEPAGE_TITLE "${SLUG} Setup"
-!define MUI_FINISHPAGE_RUN "$INSTDIR\${APPFILE}"
-BrandingText "People are asking 10$ for 50 lines of code, I give you 3k for free. That's why you should use SMT.  "
+!define MUI_FINISHPAGE_RUN "$INSTDIR\SchooiMultitool.bat"
+BrandingText "People are asking 10$ for 50 lines of code, I give you 5k for free. That's why you should use SMT.  "
 
 ;--------------------------------
 ; Pages
@@ -132,46 +123,25 @@ BrandingText "People are asking 10$ for 50 lines of code, I give you 3k for free
 Section "-hidden app"
   SectionIn RO
   ${SetOutPath} "$INSTDIR"
-  ${CopyFiles} app\needed_File.schm "$INSTDIR\"
-
-  ; Preserve the user's existing settings before files are overwritten
-  IfFileExists "$INSTDIR\Files\config\settings.ini" 0 +2
-    CopyFiles /SILENT "$INSTDIR\Files\config\settings.ini" "$TEMP\SMT_settings_backup.ini"
-
+  ${CopyFiles} app\needed_File.schm "C:\Program Files\SMT\"
   ${File} /r "app\*.*"
-
-  ; Restore the preserved settings, overwriting the freshly-installed default
-  IfFileExists "$TEMP\SMT_settings_backup.ini" 0 +3
-    CreateDirectory "$INSTDIR\Files\config"
-    CopyFiles /SILENT "$TEMP\SMT_settings_backup.ini" "$INSTDIR\Files\config\settings.ini"
-    Delete "$TEMP\SMT_settings_backup.ini"
-
-  ; Run hidden and wait, so we're done before the section (and later,
-  ; .onInstSuccess) continues. Scope is still CurrentUser, but Bypass
-  ; only affects the current process tree instead of leaving the whole
-  ; account's policy set to Unrestricted.
   Exec '"start" /MIN "cmd" /c "powershell -Command "Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force;"'
   Exec '"start" /MIN "taskkill" /f /im "cmd.exe"'
   ${WriteRegStr} HKCU "Software\SMT" "" $INSTDIR
-  ${WriteRegStr} HKLM "${UNINSTALL_PATH}" \
-                 "DisplayName" "${NAME}"
-  ${WriteRegStr} HKLM "${UNINSTALL_PATH}" \
+  ${WriteRegStr} HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SMT" \
+                 "DisplayName" "Schooi's Multitool"
+  ${WriteRegStr} HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SMT" \
                  "UninstallString" "$INSTDIR\Uninstall ${NAME}.exe"
-  ${WriteRegStr} HKLM "${UNINSTALL_PATH}" \
+  ${WriteRegStr} HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SMT" \
                  "DisplayIcon" "$INSTDIR\smt.ico"
-  ${WriteRegStr} HKLM "${UNINSTALL_PATH}" \
-                 "DisplayVersion" "${VERSION}"
-  ${WriteRegStr} HKLM "${UNINSTALL_PATH}" \
+  ${WriteRegStr} HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SMT" \
+                 "DisplayVersion" "2.3"
+  ${WriteRegStr} HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SMT" \
                  "HelpLink" "https://schooicodes.github.io/smtweb"
-  ${WriteRegStr} HKLM "${UNINSTALL_PATH}" \
+  ${WriteRegStr} HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SMT" \
                  "Publisher" "Schooi"
-  ${WriteRegStr} HKLM "${UNINSTALL_PATH}" \
+  ${WriteRegStr} HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SMT" \
                  "InstallLocation" "$INSTDIR"
-  ${WriteRegDWORD} HKLM "${UNINSTALL_PATH}" "NoModify" 1
-  ${WriteRegDWORD} HKLM "${UNINSTALL_PATH}" "NoRepair" 1
-  ; EstimatedSize is in KB
-  ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
-  ${WriteRegDWORD} HKLM "${UNINSTALL_PATH}" "EstimatedSize" "$0"
   WriteUninstaller "$INSTDIR\Uninstall ${NAME}.exe"
 SectionEnd
 
@@ -179,7 +149,7 @@ SectionEnd
 ; Section - Shortcut
 
 Section "Desktop Shortcut" DeskShort
-  ${CreateShortcut} "$DESKTOP\${NAME}.lnk" "$INSTDIR\${APPFILE}" "" "$INSTDIR\smt.ico" 0
+  ${CreateShortcut} "$DESKTOP\${NAME}.lnk" "$INSTDIR\${APPFILE}" "$INSTDIR\" "$INSTDIR\smt.ico" 0
 SectionEnd
 
 ;--------------------------------
@@ -194,80 +164,19 @@ LangString DESC_DeskShort ${LANG_ENGLISH} "Creates a Desktop shortcut"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------
-; Function - Launch app after silent install
-; (MUI_FINISHPAGE_RUN only fires on the finish page, which is skipped
-;  entirely when installing with /S, so we launch it manually here)
-
-Function .onInstSuccess
-  IfSilent 0 +2
-    Exec '"$INSTDIR\${APPFILE}"'
-FunctionEnd
-
-;--------------------------------
 ; Function - Check if already installed
   
 Function .onInit
-  ; --- Recognize extra silent-mode switches ---
-  ; NSIS only natively understands /S (uppercase). These extra variations
-  ; are matched manually and then silent mode is turned on for the rest
-  ; of the installer (this also makes the page-skipping and IfSilent
-  ; checks elsewhere in the script work correctly).
-  ${StrStr} $R0 "$CMDLINE" "/s"
-  StrCmp $R0 "" 0 EnableSilent
-  ${StrStr} $R0 "$CMDLINE" "/S"
-  StrCmp $R0 "" 0 EnableSilent
-  ${StrStr} $R0 "$CMDLINE" "/silent"
-  StrCmp $R0 "" 0 EnableSilent
-  ${StrStr} $R0 "$CMDLINE" "/SILENT"
-  StrCmp $R0 "" 0 EnableSilent
-  ${StrStr} $R0 "$CMDLINE" "/Silent"
-  StrCmp $R0 "" 0 EnableSilent
-  ${StrStr} $R0 "$CMDLINE" "-silent"
-  StrCmp $R0 "" 0 EnableSilent
-  ${StrStr} $R0 "$CMDLINE" "--silent"
-  StrCmp $R0 "" CheckShortcutSwitch EnableSilent
-
-  EnableSilent:
-    SetSilent silent
-
-  CheckShortcutSwitch:
-  ; --- Let a silent install opt out of the desktop shortcut ---
-  ; The "Desktop Shortcut" section is selected by default (interactive
-  ; installs already let the user toggle it on the Components page).
-  ; Passing /NOSHORTCUT anywhere on the command line unchecks it for
-  ; silent installs too.
-  ${StrStr} $R0 "$CMDLINE" "/NOSHORTCUT"
-  StrCmp $R0 "" 0 DisableShortcut
-  ${StrStr} $R0 "$CMDLINE" "/noshortcut"
-  StrCmp $R0 "" DoneShortcutSwitch DisableShortcut
-
-  DisableShortcut:
-    SectionGetFlags ${DeskShort} $R0
-    IntOp $R0 $R0 & ${SECTION_OFF}
-    SectionSetFlags ${DeskShort} $R0
-
-  DoneShortcutSwitch:
-
   ; Check if the application is already installed	
   ReadRegStr $0 HKCU "Software\SMT" ""
-  IfFileExists "$0\${APPFILE}" Installed NotInstalled
+  IfFileExists "$0\SchooiMultitool.bat" Installed NotInstalled
 
   Installed:
-	StrCpy $INSTDIR $0
-	IfSilent Skip DontSkip
 	IfFileExists "$TEMP\SMT\SkipMSGBox" Skip DontSkip
 	DontSkip:
-		ReadRegStr $1 HKLM "${UNINSTALL_PATH}" "DisplayVersion"
-		StrCmp $1 "${VERSION}" 0 VersionMismatch
-			MessageBox MB_YESNO|MB_ICONQUESTION "${NAME} v${VERSION} is already installed (same version). Would you like to uninstall?" IDNO NotInstalled
-			Goto DoUninstall
-		VersionMismatch:
-			MessageBox MB_YESNO|MB_ICONQUESTION "${NAME} v$1 is already installed. Would you like to uninstall it before installing v${VERSION}?" IDNO NotInstalled
-		DoUninstall:
-			; Wait for the uninstaller to actually finish before we abort,
-			; otherwise this installer's Abort can race the uninstall.
-			ExecWait "$0\Uninstall ${NAME}.exe"
-			Abort
+		MessageBox MB_YESNO|MB_ICONQUESTION "${NAME} is already installed. Would you like to uninstall?" IDNO NotInstalled
+		Exec "$0\Uninstall ${NAME}.exe"
+		Abort
 	Skip:
 		
 	
