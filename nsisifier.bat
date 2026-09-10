@@ -26,12 +26,12 @@ xcopy C:\Users\User\Documents\Github\smt\Files\Apps C:\Users\User\Documents\smt\
 xcopy C:\Users\User\Documents\Github\smt\Files\config C:\Users\User\Documents\smt\app\Files\config\ >nul
 xcopy C:\Users\User\Documents\Github\smt\Files\Schnuker C:\Users\User\Documents\smt\app\Files\Schnuker\ >nul
 cd C:\Users\User\Documents\smt\app\ >nul
-del Installer.bat >nul
-del Uninstaller.bat >nul
-del Files\IPGeolocator.exe
-del Files\autorespo.ps1
-del Files\WD.bat
-del "Schooi's Multitool Setup.exe" >nul
+if exist Installer.bat del Installer.bat >nul
+if exist Uninstaller.bat del Uninstaller.bat >nul
+if exist Files\IPGeolocator.exe del Files\IPGeolocator.exe >nul
+if exist Files\autorespo.ps1 del Files\autorespo.ps1 >nul
+if exist Files\WD.bat del Files\WD.bat >nul
+if exist "Schooi's Multitool Setup.exe" del "Schooi's Multitool Setup.exe" >nul
 cd Files >nul
 REM del setup.bat >nul 2>&1
 REM xcopy ..\..\..\setup.bat . >nul
@@ -46,6 +46,6 @@ if /i %CAP%==Y git commit -m "%commitmsg%"
 set /p push= Would you like to push too? {Y/N} 
 if /i %push%==Y cd C:\Users\User\Documents\Github\smt\ & git add "*"
 if /i %push%==Y git push
-xcopy %~f0 C:\Users\user\Documents\smt\
-7z x "C:\Users\User\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup.exe" -o"C:\Users\User\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup" -aoa
+xcopy /Y %~f0 C:\Users\user\Documents\smt\ >nul
+7z x "C:\Users\User\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup.exe" -o"C:\Users\User\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup" -aoa >nul
 explorer "C:\Users\User\Desktop\LatestSMTxNSISRelease\"
