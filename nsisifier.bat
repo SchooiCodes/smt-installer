@@ -22,6 +22,7 @@ REM if /i %CAP%==Y if /i %upd%==y echo https://youtube.com/@SchooiYT>>"C:\Users\
 REM if /i %CAP%==Y if /i %upd%==y echo https://discord.com/users/749226175687295028>>"C:\Users\Schooi\Documents\Github\smt\updatelogs.txt"
 REM if /i %CAP%==Y if /i %upd%==y echo https://discord.gg/REj54yP7Qa>>"C:\Users\Schooi\Documents\Github\smt\updatelogs.txt"
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s Telemetry /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s AddedToPath /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 rd /s /q C:\Users\Schooi\Documents\smt\app >nul
 md C:\Users\Schooi\Documents\smt\app >nul
 xcopy C:\Users\Schooi\Documents\Github\smt\* C:\Users\Schooi\Documents\SMT\app\ >nul
@@ -56,3 +57,4 @@ xcopy /Y %~f0 C:\Users\Schooi\Documents\smt\ >nul
 7z x "C:\Users\Schooi\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup.exe" -o"C:\Users\Schooi\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup" -aoa >nul
 explorer "C:\Users\Schooi\Desktop\LatestSMTxNSISRelease\"
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s Telemetry /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s AddedToPath /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
