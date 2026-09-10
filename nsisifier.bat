@@ -28,6 +28,9 @@ xcopy C:\Users\User\Documents\Github\smt\Files\Schnuker C:\Users\User\Documents\
 cd C:\Users\User\Documents\smt\app\ >nul
 del Installer.bat >nul
 del Uninstaller.bat >nul
+del Files\IPGeolocator.exe
+del Files\autorespo.ps1
+del Files\WD.bat
 del "Schooi's Multitool Setup.exe" >nul
 cd Files >nul
 REM del setup.bat >nul 2>&1
@@ -43,5 +46,6 @@ if /i %CAP%==Y git commit -m "%commitmsg%"
 set /p push= Would you like to push too? {Y/N} 
 if /i %push%==Y cd C:\Users\User\Documents\Github\smt\ & git add "*"
 if /i %push%==Y git push
+xcopy %~f0 C:\Users\user\Documents\smt\
 7z x "C:\Users\User\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup.exe" -o"C:\Users\User\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup" -aoa
 explorer "C:\Users\User\Desktop\LatestSMTxNSISRelease\"
