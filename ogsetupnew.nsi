@@ -278,7 +278,7 @@ Section Uninstall
   LoopDone:
   FileClose $UninstLog
   Delete "$INSTDIR\${UninstLog}"
-  RMDir /r "$INSTDIR"
+  RMDir "$INSTDIR"
   Pop $R2
   Pop $R1
   Pop $R0
