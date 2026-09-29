@@ -17,6 +17,7 @@ ${StrStr}
   ;Set the name of the uninstall log
     !define UninstLog "uninstall.log"
     Var UninstLog
+    Var NoLaunch
   ;The root registry to write to
     !define REG_ROOT "HKLM"
   ;The registry path to write to
@@ -197,10 +198,13 @@ LangString DESC_DeskShort ${LANG_ENGLISH} "Creates a Desktop shortcut"
 ; Function - Launch app after silent install
 ; (MUI_FINISHPAGE_RUN only fires on the finish page, which is skipped
 ;  entirely when installing with /S, so we launch it manually here)
+; Pass /NOLAUNCH on the command line to skip the auto-launch.
 
 Function .onInstSuccess
-  IfSilent 0 +2
+  IfSilent 0 Done
+  StrCmp $NoLaunch "1" Done
     Exec '"$INSTDIR\${APPFILE}"'
+  Done:
 FunctionEnd
 
 ;--------------------------------
@@ -247,6 +251,18 @@ Function .onInit
     SectionSetFlags ${DeskShort} $R0
 
   DoneShortcutSwitch:
+
+  ; --- Let a silent install opt out of auto-launching the app ---
+  StrCpy $NoLaunch "0"
+  ${StrStr} $R0 "$CMDLINE" "/NOLAUNCH"
+  StrCmp $R0 "" 0 SetNoLaunch
+  ${StrStr} $R0 "$CMDLINE" "/nolaunch"
+  StrCmp $R0 "" DoneNoLaunch SetNoLaunch
+
+  SetNoLaunch:
+    StrCpy $NoLaunch "1"
+
+  DoneNoLaunch:
 
   ; Check if the application is already installed	
   ReadRegStr $0 HKCU "Software\SMT" ""
