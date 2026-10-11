@@ -71,7 +71,7 @@ cd Files >nul
 REM del setup.bat >nul 2>&1
 REM xcopy ..\..\..\setup.bat . >nul
 cd ..
-xcopy ..\..\smt.ico . >nul
+xcopy %USERPROFILE%\Documents\smt.ico . >nul
 "C:\Program Files (x86)\NSIS\makensis.exe" %USERPROFILE%\Documents\Github\smt-installer\setup.nsi >nul
 if not errorlevel 0 "C:\Program Files (x86)\NSIS\makensis.exe" %USERPROFILE%\Documents\Github\smt-installer\setup.nsi
 xcopy /y "%USERPROFILE%\Documents\Github\smt-installer\Schooi's Multitool Setup.exe" %USERPROFILE%\Desktop\LatestSMTxNSISRelease\ >nul
@@ -82,7 +82,7 @@ if /i %CAP%==Y if not "%commitdesc%"=="" git commit -m "%commitmsg%" -m "%commit
 set /p push= Would you like to push too? {Y/N} 
 if /i %push%==Y cd %USERPROFILE%\Documents\Github\smt\ & git add "*"
 if /i %push%==Y git push
-xcopy /Y %~f0 %USERPROFILE%\Documents\Github\smt-installer\ >nul
+REM xcopy /Y %~f0 %USERPROFILE%\Documents\Github\smt-installer\ >nul
 7z x "%USERPROFILE%\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup.exe" -o"%USERPROFILE%\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup" -aoa >nul
 explorer "%USERPROFILE%\Desktop\LatestSMTxNSISRelease\"
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s System /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
