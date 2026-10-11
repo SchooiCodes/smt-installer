@@ -52,14 +52,14 @@ REM if /i %CAP%==Y if /i %upd%==y echo https://discord.gg/REj54yP7Qa>>"%USERPROF
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s System /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s System /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i disclaimers /s Visuals /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
-rd /s /q %USERPROFILE%\Documents\smt\app >nul
-md %USERPROFILE%\Documents\smt\app >nul
-xcopy %USERPROFILE%\Documents\Github\smt\* %USERPROFILE%\Documents\SMT\app\ >nul
-xcopy %USERPROFILE%\Documents\Github\smt\Files %USERPROFILE%\Documents\smt\app\Files\ >nul
-xcopy %USERPROFILE%\Documents\Github\smt\Files\Apps %USERPROFILE%\Documents\smt\app\Files\Apps\ >nul
-xcopy %USERPROFILE%\Documents\Github\smt\Files\config %USERPROFILE%\Documents\smt\app\Files\config\ >nul
-xcopy %USERPROFILE%\Documents\Github\smt\Files\Schnuker %USERPROFILE%\Documents\smt\app\Files\Schnuker\ >nul
-cd %USERPROFILE%\Documents\smt\app\ >nul
+rd /s /q %USERPROFILE%\Documents\Github\smt-installer\app >nul
+md %USERPROFILE%\Documents\Github\smt-installer\app >nul
+xcopy %USERPROFILE%\Documents\Github\smt\* %USERPROFILE%\Documents\Github\smt-installer\app\ >nul
+xcopy %USERPROFILE%\Documents\Github\smt\Files %USERPROFILE%\Documents\Github\smt-installer\app\Files\ >nul
+xcopy %USERPROFILE%\Documents\Github\smt\Files\Apps %USERPROFILE%\Documents\Github\smt-installer\app\Files\Apps\ >nul
+xcopy %USERPROFILE%\Documents\Github\smt\Files\config %USERPROFILE%\Documents\Github\smt-installer\app\Files\config\ >nul
+xcopy %USERPROFILE%\Documents\Github\smt\Files\Schnuker %USERPROFILE%\Documents\Github\smt-installer\app\Files\Schnuker\ >nul
+cd %USERPROFILE%\Documents\Github\smt-installer\app\ >nul
 if exist Installer.bat del Installer.bat >nul
 if exist Uninstaller.bat del Uninstaller.bat >nul
 if exist Files\IPGeolocator.exe del Files\IPGeolocator.exe >nul
@@ -72,9 +72,9 @@ REM del setup.bat >nul 2>&1
 REM xcopy ..\..\..\setup.bat . >nul
 cd ..
 xcopy ..\..\smt.ico . >nul
-"C:\Program Files (x86)\NSIS\makensis.exe" %USERPROFILE%\Documents\SMT\setup.nsi >nul
-if not errorlevel 0 "C:\Program Files (x86)\NSIS\makensis.exe" %USERPROFILE%\Documents\SMT\setup.nsi
-xcopy /y "%USERPROFILE%\Documents\SMT\Schooi's Multitool Setup.exe" %USERPROFILE%\Desktop\LatestSMTxNSISRelease\ >nul
+"C:\Program Files (x86)\NSIS\makensis.exe" %USERPROFILE%\Documents\Github\smt-installer\setup.nsi >nul
+if not errorlevel 0 "C:\Program Files (x86)\NSIS\makensis.exe" %USERPROFILE%\Documents\Github\smt-installer\setup.nsi
+xcopy /y "%USERPROFILE%\Documents\Github\smt-installer\Schooi's Multitool Setup.exe" %USERPROFILE%\Desktop\LatestSMTxNSISRelease\ >nul
 xcopy /y "%USERPROFILE%\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup.exe" "%USERPROFILE%\Documents\Github\smt\" >nul
 if /i %CAP%==Y cd %USERPROFILE%\Documents\Github\smt\ & git add "*"
 if /i %CAP%==Y if "%commitdesc%"=="" git commit -m "%commitmsg%"
@@ -82,7 +82,7 @@ if /i %CAP%==Y if not "%commitdesc%"=="" git commit -m "%commitmsg%" -m "%commit
 set /p push= Would you like to push too? {Y/N} 
 if /i %push%==Y cd %USERPROFILE%\Documents\Github\smt\ & git add "*"
 if /i %push%==Y git push
-xcopy /Y %~f0 %USERPROFILE%\Documents\smt\ >nul
+xcopy /Y %~f0 %USERPROFILE%\Documents\Github\smt-installer\ >nul
 7z x "%USERPROFILE%\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup.exe" -o"%USERPROFILE%\Desktop\LatestSMTxNSISRelease\Schooi's Multitool Setup" -aoa >nul
 explorer "%USERPROFILE%\Desktop\LatestSMTxNSISRelease\"
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s System /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
