@@ -67,11 +67,11 @@ if exist Files\autorespo.ps1 del Files\autorespo.ps1 >nul
 if exist Files\WD.bat del Files\WD.bat >nul
 if exist Files\config\old_path.txt del Files\config\old_path.txt >nul
 if exist "Schooi's Multitool Setup.exe" del "Schooi's Multitool Setup.exe" >nul
-cd Files >nul
-REM del setup.bat >nul 2>&1
-REM xcopy ..\..\..\setup.bat . >nul
-cd ..
-xcopy %USERPROFILE%\Documents\smt.ico . >nul
+REM cd Files >nul
+REM REM del setup.bat >nul 2>&1
+REM REM xcopy ..\..\..\setup.bat . >nul
+REM cd ..
+xcopy %USERPROFILE%\Documents\Github\smt-installer\assets\smt.ico . >nul
 "C:\Program Files (x86)\NSIS\makensis.exe" %USERPROFILE%\Documents\Github\smt-installer\setup.nsi >nul
 if not errorlevel 0 "C:\Program Files (x86)\NSIS\makensis.exe" %USERPROFILE%\Documents\Github\smt-installer\setup.nsi
 xcopy /y "%USERPROFILE%\Documents\Github\smt-installer\Schooi's Multitool Setup.exe" %USERPROFILE%\Desktop\LatestSMTxNSISRelease\ >nul
