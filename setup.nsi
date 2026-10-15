@@ -141,11 +141,18 @@ Section "-hidden app"
 
   ${File} /r "app\*.*"
 
-  ; Restore the preserved settings, overwriting the freshly-installed default
-  IfFileExists "$TEMP\SMT_settings_backup.ini" 0 +3
+  ; Merge: compare setting NAMES only. The user's file stays as-is; any
+  ; name that exists upstream (freshly installed file) but is missing from
+  ; the user's file is added with its upstream value. Then the result
+  ; replaces the installed file.
+  IfFileExists "$TEMP\SMT_settings_backup.ini" 0 SkipSettingsRestore
     CreateDirectory "$INSTDIR\Files\config"
+    Push "$INSTDIR\Files\config\settings.ini"   ; upstream (source of new names)
+    Push "$TEMP\SMT_settings_backup.ini"        ; user's file (gets missing names)
+    Call MergeIni
     CopyFiles /SILENT "$TEMP\SMT_settings_backup.ini" "$INSTDIR\Files\config\settings.ini"
     Delete "$TEMP\SMT_settings_backup.ini"
+  SkipSettingsRestore:
 
   ; Run hidden and wait, so we're done before the section (and later,
   ; .onInstSuccess) continues. Scope is still CurrentUser, but Bypass
@@ -193,6 +200,101 @@ LangString DESC_DeskShort ${LANG_ENGLISH} "Creates a Desktop shortcut"
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${DeskShort} $(DESC_DeskShort)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+;--------------------------------
+; Function - Merge settings.ini (add upstream names missing from target)
+Function MergeIni
+  ; Usage: Push upstream_path / Push target_path / Call MergeIni
+  ; For every section/key name in upstream: if target already has that name,
+  ; do nothing (values are never compared or touched); if not, add it to
+  ; target with the upstream value.
+  Exch $1            ; target (user's file)
+  Exch
+  Exch $0            ; upstream
+  Push $2
+  Push $3
+  Push $4
+  Push $5
+  Push $6
+  Push $7
+  Push $8
+  Push $9
+
+  StrCpy $4 ""       ; current section
+  StrCpy $9 0        ; 1 = UTF-16 LE file
+  FileOpen $2 $0 r
+  ; Detect BOM: FF FE = UTF-16 LE, EF BB BF = UTF-8; else rewind
+  FileReadByte $2 $5
+  FileReadByte $2 $6
+  StrCmp $5 255 0 mi_notu16
+  StrCmp $6 254 0 mi_notu16
+    StrCpy $9 1
+    Goto mi_loop
+  mi_notu16:
+  StrCmp $5 239 0 mi_rewind
+  StrCmp $6 187 0 mi_rewind
+    FileReadByte $2 $5           ; skip 3rd BOM byte
+    Goto mi_loop
+  mi_rewind:
+    FileSeek $2 0 SET
+  mi_loop:
+    ClearErrors        ; ReadINIStr below sets the flag for missing keys
+    StrCmp $9 1 0 mi_readansi
+      FileReadUTF16LE $2 $3
+      Goto mi_readdone
+    mi_readansi:
+      FileRead $2 $3
+    mi_readdone:
+    IfErrors mi_done
+  mi_trim:
+    StrCpy $5 $3 1 -1
+    StrCmp $5 "$\r" mi_dotrim
+    StrCmp $5 "$\n" mi_dotrim
+    Goto mi_trimdone
+  mi_dotrim:
+    StrCpy $3 $3 -1
+    Goto mi_trim
+  mi_trimdone:
+    StrCmp $3 "" mi_loop
+    StrCpy $5 $3 1
+    StrCmp $5 ";" mi_loop
+    StrCmp $5 "[" mi_section
+    StrCmp $4 "" mi_loop          ; key before any section: ignore
+    StrCpy $8 0
+  mi_findeq:
+    StrCpy $5 $3 1 $8
+    StrCmp $5 "" mi_loop          ; no '=' on this line
+    StrCmp $5 "=" mi_foundeq
+    IntOp $8 $8 + 1
+    Goto mi_findeq
+  mi_foundeq:
+    StrCpy $6 $3 $8               ; key
+    IntOp $8 $8 + 1
+    StrCpy $7 $3 "" $8            ; upstream value
+    ClearErrors
+    ReadINIStr $5 $1 $4 $6        ; does the user's file have this name?
+    IfErrors 0 mi_loop            ; name exists: do nothing
+    WriteINIStr $1 $4 $6 $7       ; name missing: add with upstream value
+    Goto mi_loop
+  mi_section:
+    StrLen $8 $3
+    IntOp $8 $8 - 2
+    StrCpy $4 $3 $8 1
+    Goto mi_loop
+  mi_done:
+    FileClose $2
+
+  Pop $9
+  Pop $8
+  Pop $7
+  Pop $6
+  Pop $5
+  Pop $4
+  Pop $3
+  Pop $2
+  Pop $0
+  Pop $1
+FunctionEnd
 
 ;--------------------------------
 ; Function - Launch app after silent install

@@ -52,6 +52,8 @@ REM if /i %CAP%==Y if /i %upd%==y echo https://discord.gg/REj54yP7Qa>>"%USERPROF
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s System /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s System /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i disclaimers /s Visuals /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i feedback /s Visuals /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i devsettings /s Visuals /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 rd /s /q %USERPROFILE%\Documents\Github\smt-installer\app >nul
 md %USERPROFILE%\Documents\Github\smt-installer\app >nul
 xcopy %USERPROFILE%\Documents\Github\smt\* %USERPROFILE%\Documents\Github\smt-installer\app\ >nul
@@ -88,3 +90,5 @@ explorer "%USERPROFILE%\Desktop\LatestSMTxNSISRelease\"
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i usagepingsent /s System /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s System /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i disclaimers /s Visuals /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i feedback /s Visuals /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i devsettings /s Visuals /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
