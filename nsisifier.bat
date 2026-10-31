@@ -40,8 +40,8 @@ if /i %CAP%==Y set "commitdesc="
 if /i %CAP%==Y set /p commitdesc=Commit description (optional): 
 REM if /i %CAP%==Y if /i %upd%==y echo SMT Update logs for update ID %upid%:>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
 REM if /i %CAP%==Y if /i %upd%==y echo.>>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
-if /i %CAP%==Y if /i %upd%==y echo %commitmsg%>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
-if /i %CAP%==Y if /i %upd%==y if /i NOT "%commitdesc%"=="" echo %commitdesc%>>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
+if /i %CAP%==Y if /i %upd%==y echo Title: %commitmsg%>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
+if /i %CAP%==Y if /i %upd%==y if /i NOT "%commitdesc%"=="" echo Description: %commitdesc%>>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
 REM if /i %CAP%==Y if /i %upd%==y echo.>>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
 REM if /i %CAP%==Y if /i %upd%==y echo Made with love by Schooi ^<3>>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
 REM if /i %CAP%==Y if /i %upd%==y echo.>>"%USERPROFILE%\Documents\Github\smt\updatelogs.txt"
@@ -54,6 +54,7 @@ call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s System /
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i disclaimers /s Visuals /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i feedback /s Visuals /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i devsettings /s Visuals /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i verboseboot /s System /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 rd /s /q %USERPROFILE%\Documents\Github\smt-installer\app >nul
 md %USERPROFILE%\Documents\Github\smt-installer\app >nul
 xcopy %USERPROFILE%\Documents\Github\smt\* %USERPROFILE%\Documents\Github\smt-installer\app\ >nul
@@ -92,3 +93,4 @@ call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i smtinpath /s System /
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i disclaimers /s Visuals /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i feedback /s Visuals /v false %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
 call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i devsettings /s Visuals /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
+call "%USERPROFILE%\Documents\Github\smt\Files\ini.bat" /i verboseboot /s System /v true %USERPROFILE%\Documents\Github\smt\Files\config\settings.ini >nul
